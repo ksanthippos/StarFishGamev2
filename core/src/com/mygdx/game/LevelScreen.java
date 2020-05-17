@@ -56,7 +56,7 @@ public class LevelScreen extends BaseScreen {
         win = false;
         lose = false;
 
-        // UI
+        // UI: starfish state and restart button
         starfishLabel = new Label("Starfish left:", BaseGame.labelStyle);
         starfishLabel.setColor(Color.CYAN);
         starfishLabel.setPosition(20, 520);
@@ -73,8 +73,7 @@ public class LevelScreen extends BaseScreen {
         uiStage.addActor(restartButton);
 
         restartButton.addListener((Event e) -> {
-
-           if (!(e instanceof InputEvent) || !((InputEvent) e) .getType().equals(InputEvent.Type.touchDown))
+           if (!(e instanceof InputEvent) || !((InputEvent) e).getType().equals(InputEvent.Type.touchDown))
                return false;
            StarFishGame.setActiveScreen(new LevelScreen());
            return false;
@@ -89,6 +88,7 @@ public class LevelScreen extends BaseScreen {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE))
             System.exit(0);
 
+        // shark hit --> game over
         for (BaseActor sharkActor: BaseActor.getList(mainStage, Shark.class.getCanonicalName())) {
             if (turtle.overlaps(sharkActor) && !lose && !win) {
                 lose = true;
@@ -102,9 +102,11 @@ public class LevelScreen extends BaseScreen {
             }
         }
 
+        // rock collision
         for (BaseActor rockActor: BaseActor.getList(mainStage, Rock.class.getCanonicalName()))
             turtle.preventOverlap(rockActor);
 
+        // starfish collecting and win conditions check
         for (BaseActor starfishActor: BaseActor.getList(mainStage, Starfish.class.getCanonicalName())) {
 
             Starfish starfish = (Starfish) starfishActor;
