@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
-import java.util.concurrent.CyclicBarrier;
 
 public class LevelScreen extends BaseScreen {
 
@@ -77,6 +76,7 @@ public class LevelScreen extends BaseScreen {
            return false;
         });
 
+        // set label and restart on top
         uiTable.pad(10);
         uiTable.add(starfishLabel).top();
         uiTable.add().expandX().expandY();
@@ -135,6 +135,7 @@ public class LevelScreen extends BaseScreen {
                 winMessage.addAction(Actions.after(Actions.fadeIn(1)));
             }
 
+            // how many SF left
             starfishLabel.setText("Starfish left: " + BaseActor.count(mainStage, Starfish.class.getCanonicalName()));
         }
     }

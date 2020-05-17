@@ -18,7 +18,6 @@ public class MenuScreen extends BaseScreen {
         BaseActor.setWorldBounds(ocean);
         BaseActor title = new BaseActor(0, 0, mainStage);
         title.loadTexture("starfish-collector.png");
-
         title.moveBy(0, 100);
 
         // start and quit buttons
