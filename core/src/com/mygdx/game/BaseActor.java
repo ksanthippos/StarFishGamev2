@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
@@ -342,6 +343,23 @@ public class BaseActor extends Group {
         if (getY() > worldBounds.height)
             setY(-getHeight());
     }
+
+    // proximity check
+    public boolean isWithinDistance(float distance, BaseActor other) {
+
+        Polygon poly1 = this.getBoundaryPolygon();
+        float scaleX = (this.getWidth() + 2 * distance) / this.getWidth();
+        float scaleY = (this.getHeight() + 2 * distance) / this.getHeight();
+        poly1.setScale(scaleX, scaleY);
+
+        Polygon poly2 = other.getBoundaryPolygon();
+
+        if (!poly1.getBoundingRectangle().overlaps(poly2.getBoundingRectangle()))
+            return false;
+
+        return Intersector.overlapConvexPolygons(poly1, poly2);
+    }
+
 
     // these are static methods
     public static void setWorldBounds(float width, float height) {

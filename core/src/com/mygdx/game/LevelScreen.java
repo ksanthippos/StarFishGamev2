@@ -20,6 +20,7 @@ public class LevelScreen extends BaseScreen {
     private boolean win;
     private boolean lose;
     private Label starfishLabel;
+    private DialogBox dialogBox;
 
     @Override
     public void initialize() {
@@ -41,6 +42,23 @@ public class LevelScreen extends BaseScreen {
         new Starfish(900, 600, mainStage);
         new Starfish(700, 100, mainStage);
         new Starfish(300, 400, mainStage);
+
+        // signs
+        Sign sign1 = new Sign(20, 400, mainStage);
+        sign1.setText("West Starsfish Bay");
+        Sign sign2 = new Sign(600, 300, mainStage);
+        sign2.setText("East Starfish Bay");
+
+        // dialogbox
+        dialogBox = new DialogBox(0, 0, uiStage);
+        dialogBox.setBackgroundColor(Color.TAN);
+        dialogBox.setFontColor(Color.BROWN);
+        dialogBox.setDialogSize(600, 100);
+        dialogBox.setFontScale(0.8f);
+        dialogBox.alignCenter();
+        dialogBox.setVisible(false);
+
+
 
         // sharks placed randomly
         for (int i = 0; i < 5; i++) {
@@ -76,11 +94,13 @@ public class LevelScreen extends BaseScreen {
            return false;
         });
 
-        // set label and restart on top
+        // set label and restart on top, dialogbox on bottom
         uiTable.pad(10);
         uiTable.add(starfishLabel).top();
         uiTable.add().expandX().expandY();
         uiTable.add(restartButton).top();
+        uiTable.row();
+        uiTable.add(dialogBox).colspan(3);
 
     }
 
@@ -108,6 +128,26 @@ public class LevelScreen extends BaseScreen {
         // rock collision
         for (BaseActor rockActor: BaseActor.getList(mainStage, Rock.class.getCanonicalName()))
             turtle.preventOverlap(rockActor);
+
+        // sign proximity triggers dialogbox
+        for (BaseActor signActor: BaseActor.getList(mainStage, Sign.class.getCanonicalName())) {
+
+            Sign sign = (Sign) signActor;
+            turtle.preventOverlap(sign);
+            boolean nearby = turtle.isWithinDistance(4, sign);
+
+            if (nearby && !sign.isViewing()) {
+                dialogBox.setText(sign.getText());
+                dialogBox.setVisible(true);
+                sign.setViewing(true);
+            }
+
+            if (!nearby && sign.isViewing()) {
+                dialogBox.setText(" ");
+                dialogBox.setVisible(false);
+                sign.setViewing(false);
+            }
+        }
 
         // starfish collecting and win conditions check
         for (BaseActor starfishActor: BaseActor.getList(mainStage, Starfish.class.getCanonicalName())) {
